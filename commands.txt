@@ -1,0 +1,6 @@
+#install conda
+--> https://developers.google.com/earth-engine/guides/python_install-conda#windows
+
+powershell -command "Invoke-WebRequest -Uri https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe -OutFile ~\miniconda.exe"
+
+pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org <package_name>
