@@ -201,6 +201,7 @@ def from_df_to_relational_table(df):
 
 
 if __name__ == "__main__":
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('--filepath', required=True, help='path to the excel file to import')
     parser.add_argument('--locality', choices=['Alle', 'Asuel', 'Basse-Allaine', 'Bassecourt', 'Beurnevésin', 'Boncourt','Bonfol',

@@ -8,3 +8,44 @@ pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-ho
 pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --upgrade setuptools
 
 https://wiki.python.org/moin/WindowsCompilers
+
+# commandes reçues par SSA
+
+Cher Monsieur Chèvre, 
+
+Je vous remercie de votre courrier.
+
+Le projet a été réalisé dans l’environnement Mac et Anaconda et Jupyter notebook.
+Afin de recréer mon environnemen de travail:
+
+Tout d’abord, il faut installer Anaconda.
+Puis les commandes suivantes devront être exécutées pour installer les libraires utilisés.
+- conda create -n JURA python=3.6 matplotlib pandas -k
+- conda activate JURA
+- conda install -c anaconda pycairo -k
+- conda install -c conda-forge msg-extractor -k
+- conda install -c anaconda xlrd -k
+- conda install -c conda-forge pdf2image -k
+# - pip install poppler-utils
+- pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org poppler-utils
+- conda install -c conda-forge pypdf2 -k
+- conda install -c conda-forge tesseract pytesseract -k
+- conda install -c conda-forge tabula-py -k
+
+# a valider
+- conda install -c anaconda openpyxl -k
+
+Afin d’éviter de relancer toutes les commandes ci-dessus, je vous envoie également env.yml et req.txt.
+L’environnement peut être restauré
+Soit en lançant la commande avec le fichier env.yml:
+- conda env create -f env.yml
+Soit en lançant cette commande avec le fichier req.txt:
+- conda create -n envname -file req.txt
+Soit en lançant toutes les commandes listées ci-dessus.
+
+Veuillez m’informer si une des trois solutions ont fonctionné sur l’environnement RCJU sous l’environnement Anaconda.
+Si l’installation sur un poste RCJU Mac ne fonctionne pas, je suis disponible en remote tous les matins de 8h-9h.
+
+Je reste à votre disposition pour tout complément d’information,
+
+Cordialement,
