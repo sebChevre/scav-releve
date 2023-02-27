@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import string
 import unicodedata
+import pyodbc
 
 ################################# Internal Data ########################################
 #Hard coded Commune Locality Distributeur Information
@@ -202,6 +203,16 @@ def from_df_to_relational_table(df):
 
 if __name__ == "__main__":
     
+    print(pyodbc.version) 
+    connection_string = (
+        r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};'
+        r'DBQ=D:\SCAV-RELEVES\access_db\scav_eaux.accdb;'
+    )
+    cnxn = pyodbc.connect(connection_string, autocommit=True)
+    crsr = cnxn.cursor()
+    
+    
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--filepath', required=True, help='path to the excel file to import')
     parser.add_argument('--locality', choices=['Alle', 'Asuel', 'Basse-Allaine', 'Bassecourt', 'Beurnevésin', 'Boncourt','Bonfol',
@@ -219,6 +230,8 @@ if __name__ == "__main__":
     # Input data : New excel file
     df = pd.read_excel(args.filepath)
     
+    print(df)
+
     # Remove accents for Parametre and WaterType
     df.Parametre = df.Parametre.map(lambda x: remove_accents(str(x)))
     df.WaterType = df.WaterType.map(lambda x: remove_accents(str(x)))
@@ -239,7 +252,8 @@ if __name__ == "__main__":
     
     # Handle empty values in New data
     df.rename(columns={"Unite": "Unit"}, inplace=True)
-    df["Group"] = None
+    # df["Group"] = None, toDo none as empty value
+    df["Group"] = "None"
     df.Unit.fillna(value="None", inplace=True)
     df.Code.fillna(value=999, inplace=True)
     df.WaterType.fillna(value="None", inplace=True)
@@ -260,13 +274,45 @@ if __name__ == "__main__":
 
     # Concat the original and the new data
     df_new = pd.concat([df_orig, df])
-    
+    #df_new = df
     # Split the dataframe into 5 relational tables
     df_Analysis, df_Parameter, df_Echantillon, df_Location, df_Sampler = from_df_to_relational_table(df_new)
 
     df_Analysis.to_excel("new_analysis.xlsx", index=False)
-    df_Parameter.to_excel("new_parameter.xlsx", index=False)
-    df_Echantillon.to_excel("new_echantillon.xlsx", index=False)
-    df_Location.to_excel("new_location.xlsx", index=False)
-    df_Sampler.to_excel("new_sampler.xlsx", index=False)
+    
+    table_name = "Analysis"
 
+    print(df_Analysis.to_string())
+
+  
+    crsr.executemany(
+     f"INSERT INTO Analysis ([Value], [Date], EchantillonID, ParamID) VALUES (?, ?, ?, ?)",
+        df_Analysis.itertuples(index=False)
+    )
+
+    print(df_Parameter.to_string())
+    df_Parameter.to_excel("new_parameter.xlsx", index=False)
+    crsr.executemany(
+     f"INSERT INTO Parameter (Nom, [Group], Unit, Limit) VALUES (?, ?, ?, ?)",
+        df_Parameter.itertuples(index=False)
+    )
+
+    print(df_Echantillon.to_string())
+    df_Echantillon.to_excel("new_echantillon.xlsx", index=False)
+    crsr.executemany(
+     f"INSERT INTO Echantillon (AddressID, SamplerID, Code, FloconsNb, Temperature) VALUES (?, ?, ?, ?, ?)",
+        df_Echantillon.itertuples(index=False)
+    )
+
+    
+    df_Location.to_excel("new_location.xlsx", index=False)
+    crsr.executemany(
+     f"INSERT INTO Location (Address, WaterType, Treatment, Village, Commune, Distributeur) VALUES (?, ?, ?, ?, ?, ?)",
+        df_Location.itertuples(index=False)
+    )
+    
+    df_Sampler.to_excel("new_sampler.xlsx", index=False)
+    crsr.executemany(
+     f"INSERT INTO Sampler (FirstName, LastName) VALUES (?, ?)",
+        df_Sampler.itertuples(index=False)
+    )

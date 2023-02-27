@@ -9,6 +9,19 @@ pip3 install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-ho
 
 https://wiki.python.org/moin/WindowsCompilers
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # commandes reçues par SSA
 
 Cher Monsieur Chèvre, 
